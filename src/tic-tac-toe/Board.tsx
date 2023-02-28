@@ -9,9 +9,11 @@ interface Props {
   currentPlayer: number;
   setCurrentPlayer: Function;
   setShowWinScreen: Function;
+  resetGame: boolean;
+  setResetGame: Function;
 }
 
-const Board: FC<Props> = ({currentPlayer, setCurrentPlayer, setShowWinScreen}) => {
+const Board: FC<Props> = ({currentPlayer, setCurrentPlayer, setShowWinScreen, resetGame, setResetGame}) => {
 
   const newBoard: GameStateType  = {
     0: -1, 1: -1, 2: -1,
@@ -25,6 +27,14 @@ const Board: FC<Props> = ({currentPlayer, setCurrentPlayer, setShowWinScreen}) =
       ? setShowWinScreen(true)
       : setCurrentPlayer((prevState: number) => prevState === 0 ? 1 : 0);
   },[gameState]);
+
+  useEffect(() => {
+    if (resetGame) {
+      setGameState(newBoard);
+      setCurrentPlayer(1);
+      setResetGame(false);
+    }
+  },[resetGame]);
 
   const handleCellClick = (pos: number) => {
     if (gameState[pos] === -1) {
