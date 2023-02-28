@@ -1,25 +1,35 @@
 import Cell from './Cell';
-import {useEffect, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 
-const Board = () => {
+interface GameStateType {
+  [pos: number]: number;
+}
 
-  const [gameState, setGameState] = useState({
+interface Props {
+  currentPlayer: number;
+  setCurrentPlayer: Function;
+}
+
+const Board: FC<Props> = ({currentPlayer, setCurrentPlayer}) => {
+
+  const newBoard: GameStateType  = {
     0: -1, 1: -1, 2: -1,
     3: -1, 4: -1, 5: -1,
     6: -1, 7: -1, 8: -1
-  });
-  const [currentPlayer, setCurrentPlayer] = useState(0);
+  }
+  const [gameState, setGameState] = useState(newBoard);
+
   useEffect(() => {
     checkWinCondition();
   },[gameState]);
 
-  const handleCellClick = (pos: string) => {
+  const handleCellClick = (pos: number) => {
     if (gameState[pos] === -1) {
       setGameState({
         ...gameState,
         [pos]: currentPlayer
       });
-      setCurrentPlayer(prevState => prevState === 0 ? 1 : 0);
+      setCurrentPlayer((prevState: number) => prevState === 0 ? 1 : 0);
     }
   }
 
