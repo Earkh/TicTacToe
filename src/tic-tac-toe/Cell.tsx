@@ -1,4 +1,3 @@
-import './Cell.css';
 import {FC} from 'react';
 
 interface Props {
@@ -10,7 +9,7 @@ interface Props {
 const Cell: FC<Props> = ({pos, value, markCell}) => {
   return (
     <div
-      className={`cell h-[150px] bg-slate-700 rounded hover:bg-slate-500 flex justify-center items-center text-6xl ${value === 0 ? "text-rose-500" : "text-sky-500"}`}
+      className={`h-[150px] bg-slate-700 rounded hover:bg-slate-500 flex justify-center items-center text-6xl ${value === 0 ? "text-rose-500" : "text-sky-500"}`}
       onClick={() => markCell(pos)}
     >
       {

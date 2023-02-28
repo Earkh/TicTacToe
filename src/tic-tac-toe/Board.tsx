@@ -1,5 +1,5 @@
-import Cell from './Cell';
 import {FC, useEffect, useState} from 'react';
+import Cell from './Cell';
 
 interface GameStateType {
   [pos: number]: number;
@@ -8,9 +8,10 @@ interface GameStateType {
 interface Props {
   currentPlayer: number;
   setCurrentPlayer: Function;
+  setShowWinScreen: Function;
 }
 
-const Board: FC<Props> = ({currentPlayer, setCurrentPlayer}) => {
+const Board: FC<Props> = ({currentPlayer, setCurrentPlayer, setShowWinScreen}) => {
 
   const newBoard: GameStateType  = {
     0: -1, 1: -1, 2: -1,
@@ -20,7 +21,9 @@ const Board: FC<Props> = ({currentPlayer, setCurrentPlayer}) => {
   const [gameState, setGameState] = useState(newBoard);
 
   useEffect(() => {
-    checkWinCondition();
+    checkWinCondition()
+      ? setShowWinScreen(true)
+      : setCurrentPlayer((prevState: number) => prevState === 0 ? 1 : 0);
   },[gameState]);
 
   const handleCellClick = (pos: number) => {
@@ -29,11 +32,11 @@ const Board: FC<Props> = ({currentPlayer, setCurrentPlayer}) => {
         ...gameState,
         [pos]: currentPlayer
       });
-      setCurrentPlayer((prevState: number) => prevState === 0 ? 1 : 0);
     }
   }
 
   const checkWinCondition = () => {
+    let result = false;
     const winConditions = [
       [0, 1, 2],
       [3, 4, 5],
@@ -46,13 +49,14 @@ const Board: FC<Props> = ({currentPlayer, setCurrentPlayer}) => {
     ];
     winConditions.forEach(condition => {
       if (gameState[condition[0]] >= 0 && gameState[condition[0]] === gameState[condition[1]] && gameState[condition[0]] === gameState[condition[2]]) {
-        console.log('Winner winner chicken dinner')
+        result = true;
       }
     })
+    return result;
   }
 
   return (
-    <section className="grid grid-cols-3 gap-1 w-[500px] box-border p-2">
+    <section className="grid grid-cols-3 gap-1 w-[500px] max-w-[95%] box-border p-2">
       {
         Object.entries(gameState).map(([key, value]) => (
           <Cell key={key} pos={key} value={value} markCell={handleCellClick} />
