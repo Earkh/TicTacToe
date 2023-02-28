@@ -9,11 +9,12 @@ interface Props {
   currentPlayer: number;
   setCurrentPlayer: Function;
   setShowWinScreen: Function;
+  setShowDrawScreen: Function;
   resetGame: boolean;
   setResetGame: Function;
 }
 
-const Board: FC<Props> = ({currentPlayer, setCurrentPlayer, setShowWinScreen, resetGame, setResetGame}) => {
+const Board: FC<Props> = ({currentPlayer, setCurrentPlayer, setShowWinScreen, setShowDrawScreen, resetGame, setResetGame}) => {
 
   const newBoard: GameStateType  = {
     0: -1, 1: -1, 2: -1,
@@ -21,16 +22,24 @@ const Board: FC<Props> = ({currentPlayer, setCurrentPlayer, setShowWinScreen, re
     6: -1, 7: -1, 8: -1
   }
   const [gameState, setGameState] = useState(newBoard);
+  const [moves, setMoves] = useState<number>(0);
 
   useEffect(() => {
-    checkWinCondition()
-      ? setShowWinScreen(true)
-      : setCurrentPlayer((prevState: number) => prevState === 0 ? 1 : 0);
+    if (checkWinCondition()) {
+      setShowWinScreen(true)
+    } else {
+      if (moves === 9) {
+        setShowDrawScreen(true)
+      } else {
+        setCurrentPlayer((prevState: number) => prevState === 0 ? 1 : 0);
+      }
+    }
   },[gameState]);
 
   useEffect(() => {
     if (resetGame) {
       setGameState(newBoard);
+      setMoves(0);
       setCurrentPlayer(1);
       setResetGame(false);
     }
@@ -42,6 +51,7 @@ const Board: FC<Props> = ({currentPlayer, setCurrentPlayer, setShowWinScreen, re
         ...gameState,
         [pos]: currentPlayer
       });
+      setMoves((prevState: number) => prevState + 1);
     }
   }
 
